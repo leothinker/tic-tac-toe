@@ -2,19 +2,22 @@ export interface GameState {
   cells: (string | null)[]
 }
 
+/**
+ * Checks for a winner and returns the winning indices.
+ */
 function GetWinningPositions(cells: (string | null)[]): number[] | null {
-  const positions = [
+  const lines = [
     [0, 1, 2],
     [3, 4, 5],
-    [6, 7, 8],
+    [6, 7, 8], // Rows
     [0, 3, 6],
     [1, 4, 7],
-    [2, 5, 8],
+    [2, 5, 8], // Columns
     [0, 4, 8],
-    [2, 4, 6],
+    [2, 4, 6], // Diagonals
   ]
 
-  for (const pos of positions) {
+  for (const pos of lines) {
     const symbols = pos.map((i) => cells[i])
     if (symbols[0] !== null && symbols.every((s) => s === symbols[0])) {
       return pos
@@ -30,9 +33,7 @@ const TicTacToe = {
     cells: Array(9).fill(null),
   }),
 
-  turn: {
-    moveLimit: 1,
-  },
+  turn: { moveLimit: 1 },
 
   moves: {
     clickCell: ({ G, ctx }: any, id: number) => {
@@ -43,13 +44,9 @@ const TicTacToe = {
   },
 
   endIf: ({ G, ctx }: any) => {
-    const winPos = GetWinningPositions(G.cells)
-    if (winPos) {
-      return { winner: ctx.currentPlayer, line: winPos }
-    }
-    if (G.cells.filter((c: string | null) => c === null).length === 0) {
-      return { draw: true }
-    }
+    const line = GetWinningPositions(G.cells)
+    if (line) return { winner: ctx.currentPlayer, line }
+    if (G.cells.every((c) => c !== null)) return { draw: true }
   },
 
   ai: {
