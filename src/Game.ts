@@ -1,8 +1,8 @@
-import type { Game } from 'boardgame.io';
-import { INVALID_MOVE } from 'boardgame.io/core';
+import type { Game } from "boardgame.io"
+import { INVALID_MOVE } from "boardgame.io/core"
 
 export interface TicTacToeState {
-  cells: (string | null)[];
+  cells: (string | null)[]
 }
 
 function IsVictory(cells: (string | null)[]) {
@@ -15,16 +15,19 @@ function IsVictory(cells: (string | null)[]) {
     [2, 5, 8],
     [0, 4, 8],
     [2, 4, 6],
-  ];
+  ]
+
   const isRowComplete = (row: number[]) => {
-    const symbols = row.map((i) => cells[i]);
-    return symbols.every((i) => i !== null && i === symbols[0]);
-  };
-  return positions.map(isRowComplete).some((i) => i);
+    const symbols = row.map((i) => cells[i])
+    return symbols.every((i) => i !== null && i === symbols[0])
+  }
+
+  return positions.map(isRowComplete).some((i) => i === true)
 }
 
+// Return true if all `cells` are occupied.
 function IsDraw(cells: (string | null)[]) {
-  return cells.filter((c) => c === null).length === 0;
+  return cells.filter((c) => c === null).length === 0
 }
 
 export const TicTacToe: Game<TicTacToeState> = {
@@ -38,18 +41,18 @@ export const TicTacToe: Game<TicTacToeState> = {
   moves: {
     clickCell: ({ G, playerID }, id: number) => {
       if (G.cells[id] !== null) {
-        return INVALID_MOVE;
+        return INVALID_MOVE
       }
-      G.cells[id] = playerID;
+      G.cells[id] = playerID
     },
   },
 
   endIf: ({ G, ctx }) => {
     if (IsVictory(G.cells)) {
-      return { winner: ctx.currentPlayer };
+      return { winner: ctx.currentPlayer }
     }
     if (IsDraw(G.cells)) {
-      return { draw: true };
+      return { draw: true }
     }
   },
-};
+}
